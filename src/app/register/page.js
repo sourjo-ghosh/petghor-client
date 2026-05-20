@@ -1,28 +1,29 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { 
-  Envelope, 
-  Key, 
-  ArrowRight, 
+import React, { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Envelope,
+  Key,
+  ArrowRight,
   Heart,
   Eye,
   EyeSlash,
   Person,
   Picture,
   Check,
-  Xmark
-} from '@gravity-ui/icons';
+  Xmark,
+} from "@gravity-ui/icons";
+import { authClient } from "../lib/auth-client";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    imageUrl: '',
-    password: '',
-    confirmPassword: '',
+    name: "",
+    email: "",
+    imageUrl: "",
+    password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,46 +31,44 @@ const RegisterPage = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-
-
   // Password strength checker - simple counting
   const getPasswordStrength = (password) => {
     let strength = 0;
     if (password.length >= 8) strength++;
-    
+
     // Check for uppercase
     let hasUpper = false;
     for (let i = 0; i < password.length; i++) {
-      if (password[i] >= 'A' && password[i] <= 'Z') {
+      if (password[i] >= "A" && password[i] <= "Z") {
         hasUpper = true;
         break;
       }
     }
     if (hasUpper) strength++;
-    
+
     // Check for lowercase
     let hasLower = false;
     for (let i = 0; i < password.length; i++) {
-      if (password[i] >= 'a' && password[i] <= 'z') {
+      if (password[i] >= "a" && password[i] <= "z") {
         hasLower = true;
         break;
       }
     }
     if (hasLower) strength++;
-    
+
     // Check for number
     let hasNumber = false;
     for (let i = 0; i < password.length; i++) {
-      if (password[i] >= '0' && password[i] <= '9') {
+      if (password[i] >= "0" && password[i] <= "9") {
         hasNumber = true;
         break;
       }
     }
     if (hasNumber) strength++;
-    
+
     // Check for special character
     let hasSpecial = false;
-    const specials = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const specials = "!@#$%^&*()_+-=[]{}|;:,.<>?";
     for (let i = 0; i < password.length; i++) {
       if (specials.includes(password[i])) {
         hasSpecial = true;
@@ -77,18 +76,24 @@ const RegisterPage = () => {
       }
     }
     if (hasSpecial) strength++;
-    
+
     return strength;
   };
 
   const passwordStrength = getPasswordStrength(formData.password);
-  const strengthLabels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
-  const strengthColors = ['bg-destructive', 'bg-orange-500', 'bg-yellow-500', 'bg-blue-500', 'bg-emerald-500'];
+  const strengthLabels = ["Very Weak", "Weak", "Fair", "Good", "Strong"];
+  const strengthColors = [
+    "bg-destructive",
+    "bg-orange-500",
+    "bg-yellow-500",
+    "bg-blue-500",
+    "bg-emerald-500",
+  ];
 
   // Check if password has uppercase
   const hasUppercase = (password) => {
     for (let i = 0; i < password.length; i++) {
-      if (password[i] >= 'A' && password[i] <= 'Z') return true;
+      if (password[i] >= "A" && password[i] <= "Z") return true;
     }
     return false;
   };
@@ -96,7 +101,7 @@ const RegisterPage = () => {
   // Check if password has lowercase
   const hasLowercase = (password) => {
     for (let i = 0; i < password.length; i++) {
-      if (password[i] >= 'a' && password[i] <= 'z') return true;
+      if (password[i] >= "a" && password[i] <= "z") return true;
     }
     return false;
   };
@@ -104,40 +109,40 @@ const RegisterPage = () => {
   // Check if password has number
   const hasNumber = (password) => {
     for (let i = 0; i < password.length; i++) {
-      if (password[i] >= '0' && password[i] <= '9') return true;
+      if (password[i] >= "0" && password[i] <= "9") return true;
     }
     return false;
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     // Name validation
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = "Name is required";
     } else if (formData.name.length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      newErrors.name = "Name must be at least 2 characters";
     }
-    
+
     // Email validation - browser handles format with type="email"
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     }
-    
+
     // Password validation
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     }
-    
+
     // Confirm password validation
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -146,72 +151,76 @@ const RegisterPage = () => {
     e.preventDefault();
     if (!validateForm()) return;
     setIsLoading(true);
-    
-  const formData = new FormData(e.target); // Capture data
-  const data = Object.fromEntries(formData); // Convert to object
-  
-  console.log(data);// Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
+    const formData = new FormData(e.target); // Capture data
+    const Userdata = Object.fromEntries(formData); // Convert to object
+    // console.log(data);
+    const { data, error } = await authClient.signUp.email({
+      name: Userdata.name, // required
+      email: Userdata.email, // required
+      password: Userdata.password, // required
+      image: Userdata.imageUrl,
+      // callbackURL: "https://example.com/callback",
+    });
+    console.log(data, error)
     setIsLoading(false);
-    // Handle registration logic here
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const handleBlur = (e) => {
     const { name } = e.target;
-    setTouched(prev => ({ ...prev, [name]: true }));
-    
+    setTouched((prev) => ({ ...prev, [name]: true }));
+
     // Simple field validation on blur
     const newErrors = { ...errors };
-    
-    if (name === 'name') {
+
+    if (name === "name") {
       if (!formData.name.trim()) {
-        newErrors.name = 'Name is required';
+        newErrors.name = "Name is required";
       } else if (formData.name.length < 2) {
-        newErrors.name = 'Name must be at least 2 characters';
+        newErrors.name = "Name must be at least 2 characters";
       } else {
         delete newErrors.name;
       }
     }
-    
-    if (name === 'email') {
+
+    if (name === "email") {
       if (!formData.email) {
-        newErrors.email = 'Email is required';
+        newErrors.email = "Email is required";
       } else {
         delete newErrors.email;
       }
     }
-    
-    if (name === 'password') {
+
+    if (name === "password") {
       if (!formData.password) {
-        newErrors.password = 'Password is required';
+        newErrors.password = "Password is required";
       } else if (formData.password.length < 8) {
-        newErrors.password = 'Password must be at least 8 characters';
+        newErrors.password = "Password must be at least 8 characters";
       } else {
         delete newErrors.password;
       }
     }
-    
-    if (name === 'confirmPassword') {
+
+    if (name === "confirmPassword") {
       if (!formData.confirmPassword) {
-        newErrors.confirmPassword = 'Please confirm your password';
+        newErrors.confirmPassword = "Please confirm your password";
       } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Passwords do not match';
+        newErrors.confirmPassword = "Passwords do not match";
       } else {
         delete newErrors.confirmPassword;
       }
     }
-    
+
     setErrors(newErrors);
   };
 
@@ -221,12 +230,12 @@ const RegisterPage = () => {
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"
         />
         <motion.div
           animate={{ x: [0, -20, 0], y: [0, 30, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"
         />
       </div>
@@ -268,7 +277,10 @@ const RegisterPage = () => {
         >
           {/* Name Field */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Full Name <span className="text-destructive">*</span>
             </label>
             <div className="relative">
@@ -285,8 +297,8 @@ const RegisterPage = () => {
                 placeholder="Enter your full name"
                 className={`block w-full pl-12 pr-4 py-3.5 rounded-xl border ${
                   errors.name && touched.name
-                    ? 'border-destructive focus:ring-destructive/20' 
-                    : 'border-border focus:ring-primary/20'
+                    ? "border-destructive focus:ring-destructive/20"
+                    : "border-border focus:ring-primary/20"
                 } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-4 transition-all`}
               />
               {formData.name && !errors.name && (
@@ -309,7 +321,10 @@ const RegisterPage = () => {
 
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Email Address <span className="text-destructive">*</span>
             </label>
             <div className="relative">
@@ -326,8 +341,8 @@ const RegisterPage = () => {
                 placeholder="Enter your email"
                 className={`block w-full pl-12 pr-4 py-3.5 rounded-xl border ${
                   errors.email && touched.email
-                    ? 'border-destructive focus:ring-destructive/20' 
-                    : 'border-border focus:ring-primary/20'
+                    ? "border-destructive focus:ring-destructive/20"
+                    : "border-border focus:ring-primary/20"
                 } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-4 transition-all`}
               />
               {formData.email && !errors.email && (
@@ -350,9 +365,14 @@ const RegisterPage = () => {
 
           {/* Image URL Field (Optional) */}
           <div>
-            <label htmlFor="imageUrl" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="imageUrl"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Profile Image URL
-              <span className="ml-2 text-xs text-muted-foreground font-normal">(Optional)</span>
+              <span className="ml-2 text-xs text-muted-foreground font-normal">
+                (Optional)
+              </span>
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -368,8 +388,8 @@ const RegisterPage = () => {
                 placeholder="https://example.com/your-image.jpg"
                 className={`block w-full pl-12 pr-4 py-3.5 rounded-xl border ${
                   errors.imageUrl && touched.imageUrl
-                    ? 'border-destructive focus:ring-destructive/20' 
-                    : 'border-border focus:ring-primary/20'
+                    ? "border-destructive focus:ring-destructive/20"
+                    : "border-border focus:ring-primary/20"
                 } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-4 transition-all`}
               />
             </div>
@@ -377,7 +397,10 @@ const RegisterPage = () => {
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Password <span className="text-destructive">*</span>
             </label>
             <div className="relative">
@@ -387,15 +410,15 @@ const RegisterPage = () => {
               <input
                 id="password"
                 name="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="Create a strong password"
                 className={`block w-full pl-12 pr-12 py-3.5 rounded-xl border ${
                   errors.password && touched.password
-                    ? 'border-destructive focus:ring-destructive/20' 
-                    : 'border-border focus:ring-primary/20'
+                    ? "border-destructive focus:ring-destructive/20"
+                    : "border-border focus:ring-primary/20"
                 } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-4 transition-all`}
               />
               <button
@@ -410,7 +433,7 @@ const RegisterPage = () => {
                 )}
               </button>
             </div>
-            
+
             {/* Password Strength Indicator */}
             {formData.password && (
               <div className="mt-3">
@@ -419,19 +442,24 @@ const RegisterPage = () => {
                     <div
                       key={i}
                       className={`flex-1 rounded-full transition-all duration-300 ${
-                        i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-muted'
+                        i < passwordStrength
+                          ? strengthColors[passwordStrength - 1]
+                          : "bg-muted"
                       }`}
                     />
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Password strength: <span className={`font-medium ${strengthColors[passwordStrength - 1]?.replace('bg-', 'text-') || 'text-muted-foreground'}`}>
+                  Password strength:{" "}
+                  <span
+                    className={`font-medium ${strengthColors[passwordStrength - 1]?.replace("bg-", "text-") || "text-muted-foreground"}`}
+                  >
                     {strengthLabels[passwordStrength]}
                   </span>
                 </p>
               </div>
             )}
-            
+
             {errors.password && touched.password && (
               <motion.p
                 initial={{ opacity: 0, y: -10 }}
@@ -442,18 +470,30 @@ const RegisterPage = () => {
                 {errors.password}
               </motion.p>
             )}
-            
+
             <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-              <li className={`flex items-center gap-1 ${formData.password.length >= 8 ? 'text-emerald-500' : ''}`}>
-                <Check className={`h-3 w-3 ${formData.password.length >= 8 ? 'opacity-100' : 'opacity-0'}`} />
+              <li
+                className={`flex items-center gap-1 ${formData.password.length >= 8 ? "text-emerald-500" : ""}`}
+              >
+                <Check
+                  className={`h-3 w-3 ${formData.password.length >= 8 ? "opacity-100" : "opacity-0"}`}
+                />
                 At least 8 characters
               </li>
-              <li className={`flex items-center gap-1 ${hasUppercase(formData.password) && hasLowercase(formData.password) ? 'text-emerald-500' : ''}`}>
-                <Check className={`h-3 w-3 ${hasUppercase(formData.password) && hasLowercase(formData.password) ? 'opacity-100' : 'opacity-0'}`} />
+              <li
+                className={`flex items-center gap-1 ${hasUppercase(formData.password) && hasLowercase(formData.password) ? "text-emerald-500" : ""}`}
+              >
+                <Check
+                  className={`h-3 w-3 ${hasUppercase(formData.password) && hasLowercase(formData.password) ? "opacity-100" : "opacity-0"}`}
+                />
                 Uppercase & lowercase letters
               </li>
-              <li className={`flex items-center gap-1 ${hasNumber(formData.password) ? 'text-emerald-500' : ''}`}>
-                <Check className={`h-3 w-3 ${hasNumber(formData.password) ? 'opacity-100' : 'opacity-0'}`} />
+              <li
+                className={`flex items-center gap-1 ${hasNumber(formData.password) ? "text-emerald-500" : ""}`}
+              >
+                <Check
+                  className={`h-3 w-3 ${hasNumber(formData.password) ? "opacity-100" : "opacity-0"}`}
+                />
                 At least one number
               </li>
             </ul>
@@ -461,7 +501,10 @@ const RegisterPage = () => {
 
           {/* Confirm Password Field */}
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Confirm Password <span className="text-destructive">*</span>
             </label>
             <div className="relative">
@@ -471,17 +514,18 @@ const RegisterPage = () => {
               <input
                 id="confirmPassword"
                 name="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={showConfirmPassword ? "text" : "password"}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 placeholder="Confirm your password"
                 className={`block w-full pl-12 pr-12 py-3.5 rounded-xl border ${
                   errors.confirmPassword && touched.confirmPassword
-                    ? 'border-destructive focus:ring-destructive/20' 
-                    : formData.confirmPassword && formData.password === formData.confirmPassword
-                    ? 'border-emerald-500 focus:ring-emerald-500/20'
-                    : 'border-border focus:ring-primary/20'
+                    ? "border-destructive focus:ring-destructive/20"
+                    : formData.confirmPassword &&
+                        formData.password === formData.confirmPassword
+                      ? "border-emerald-500 focus:ring-emerald-500/20"
+                      : "border-border focus:ring-primary/20"
                 } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-4 transition-all`}
               />
               <button
@@ -496,16 +540,17 @@ const RegisterPage = () => {
                 )}
               </button>
             </div>
-            {formData.confirmPassword && formData.password === formData.confirmPassword && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-sm text-emerald-500 flex items-center gap-1"
-              >
-                <Check className="h-4 w-4" />
-                Passwords match
-              </motion.p>
-            )}
+            {formData.confirmPassword &&
+              formData.password === formData.confirmPassword && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-2 text-sm text-emerald-500 flex items-center gap-1"
+                >
+                  <Check className="h-4 w-4" />
+                  Passwords match
+                </motion.p>
+              )}
             {errors.confirmPassword && touched.confirmPassword && (
               <motion.p
                 initial={{ opacity: 0, y: -10 }}
@@ -528,12 +573,18 @@ const RegisterPage = () => {
               className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary"
             />
             <label htmlFor="terms" className="text-sm text-muted-foreground">
-              I agree to the{' '}
-              <Link href="/terms" className="text-primary hover:text-primary/80 font-medium">
+              I agree to the{" "}
+              <Link
+                href="/terms"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
                 Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link href="/privacy" className="text-primary hover:text-primary/80 font-medium">
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy"
+                className="text-primary hover:text-primary/80 font-medium"
+              >
                 Privacy Policy
               </Link>
             </label>
@@ -550,7 +601,7 @@ const RegisterPage = () => {
             {isLoading ? (
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 className="h-5 w-5 border-2 border-primary-foreground border-t-transparent rounded-full"
               />
             ) : (
@@ -622,7 +673,7 @@ const RegisterPage = () => {
           transition={{ delay: 0.3 }}
           className="text-center text-sm text-muted-foreground"
         >
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link
             href="/login"
             className="font-semibold text-primary hover:text-primary/80 transition-colors"

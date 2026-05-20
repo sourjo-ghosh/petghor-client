@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/NavbarDesign2"; // Modern floating pill design
+import Navbar from "@/components/NavbarDesign1"; 
+import Footer from "@/components/Footer";
 import Providers from "@/components/ThemeProvider";
 
 const geistSans = Geist({
@@ -27,7 +28,10 @@ export default function RootLayout({ children }) {
       <body className="min-h-full flex flex-col">
         <Providers>
           <Navbar/>
-          {children}
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer/>
         </Providers>
       </body>
     </html>

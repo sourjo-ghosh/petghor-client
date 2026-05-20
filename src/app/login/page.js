@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { 
-  Envelope, 
-  Key, 
-  ArrowRight, 
+import React, { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Envelope,
+  Key,
+  ArrowRight,
   Heart,
   Eye,
-  EyeSlash
-} from '@gravity-ui/icons';
+  EyeSlash,
+} from "@gravity-ui/icons";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,42 +23,42 @@ const LoginPage = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     }
-    
+
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = "Password must be at least 6 characters";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
     // Simulate API call
     const formData = new FormData(e.target); // Capture data
     const data = Object.fromEntries(formData); // Convert to object
     console.log(data);
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
     // Handle login logic here
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -68,12 +68,12 @@ const LoginPage = () => {
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"
         />
         <motion.div
           animate={{ x: [0, -20, 0], y: [0, 30, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl"
         />
       </div>
@@ -97,9 +97,7 @@ const LoginPage = () => {
             </div>
             <span className="text-2xl font-bold text-foreground">PetGhor</span>
           </Link>
-          <h2 className="text-3xl font-bold text-foreground">
-            Welcome Back!
-          </h2>
+          <h2 className="text-3xl font-bold text-foreground">Welcome Back!</h2>
           <p className="mt-2 text-muted-foreground">
             Sign in to continue your pet adoption journey
           </p>
@@ -115,7 +113,10 @@ const LoginPage = () => {
         >
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -130,9 +131,9 @@ const LoginPage = () => {
                 onChange={handleChange}
                 placeholder="Enter your email"
                 className={`block w-full pl-12 pr-4 py-3.5 rounded-xl border ${
-                  errors.email 
-                    ? 'border-destructive focus:ring-destructive/20' 
-                    : 'border-border focus:ring-primary/20'
+                  errors.email
+                    ? "border-destructive focus:ring-destructive/20"
+                    : "border-border focus:ring-primary/20"
                 } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-4 transition-all`}
               />
             </div>
@@ -149,7 +150,10 @@ const LoginPage = () => {
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-foreground mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -159,14 +163,14 @@ const LoginPage = () => {
               <input
                 id="password"
                 name="password"
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
                 className={`block w-full pl-12 pr-12 py-3.5 rounded-xl border ${
-                  errors.password 
-                    ? 'border-destructive focus:ring-destructive/20' 
-                    : 'border-border focus:ring-primary/20'
+                  errors.password
+                    ? "border-destructive focus:ring-destructive/20"
+                    : "border-border focus:ring-primary/20"
                 } bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-4 transition-all`}
               />
               <button
@@ -213,7 +217,7 @@ const LoginPage = () => {
             {isLoading ? (
               <motion.div
                 animate={{ rotate: 360 }}
-                transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                 className="h-5 w-5 border-2 border-primary-foreground border-t-transparent rounded-full"
               />
             ) : (
@@ -285,7 +289,7 @@ const LoginPage = () => {
           transition={{ delay: 0.3 }}
           className="text-center text-sm text-muted-foreground"
         >
-          Don&apos;t have an account?{' '}
+          Don&apos;t have an account?{" "}
           <Link
             href="/register"
             className="font-semibold text-primary hover:text-primary/80 transition-colors"

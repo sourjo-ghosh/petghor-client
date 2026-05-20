@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, LayoutHeaderCells, ArrowRightFromSquare } from '@gravity-ui/icons';
 
-const UserMenu = ({ user, onLogout }) => {
+const UserMenu = ({userName, userEmail}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -14,10 +14,10 @@ const UserMenu = ({ user, onLogout }) => {
         className="flex items-center gap-2 rounded-full p-1 pr-3 transition-colors hover:bg-muted"
       >
         <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
-          {user?.name?.charAt(0) || 'U'}
+          {userName}
         </div>
         <span className="text-sm font-medium text-foreground hidden sm:block">
-          {user?.name || 'User'}
+          {userName}
         </span>
         <ChevronDown 
           className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -32,8 +32,8 @@ const UserMenu = ({ user, onLogout }) => {
           />
           <div className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-border bg-background shadow-lg z-50 py-2">
             <div className="px-4 py-2 border-b border-border">
-              <p className="text-sm font-medium text-foreground">{user?.name}</p>
-              <p className="text-xs text-muted-foreground">{user?.email}</p>
+              <p className="text-sm font-medium text-foreground">{userName}</p>
+              <p className="text-xs text-muted-foreground">{userEmail}</p>
             </div>
             
             <Link
