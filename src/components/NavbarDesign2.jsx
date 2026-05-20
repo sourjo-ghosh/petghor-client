@@ -5,7 +5,6 @@ import Link from 'next/link';
 import UserMenu from './UserMenu';
 import ThemeToggle from './ThemeToggle';
 import { Heart, BarsUnaligned, Xmark } from '@gravity-ui/icons';
-import { Origami } from 'lucide-react';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -14,7 +13,7 @@ const navLinks = [
 
 // Mock auth state - replace with your actual auth logic
 const useAuth = () => {
-  const [user, setUser] = useState(true);
+  const [user, setUser] = useState(null);
   
   const login = () => {
     setUser({ name: 'John Doe', email: 'john@example.com' });
@@ -37,7 +36,7 @@ const NavbarDesign2 = () => {
         {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2 pl-4 flex-shrink-0">
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Origami  className="h-5 w-5 text-primary-foreground" />
+            <Heart className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             PetGhor
