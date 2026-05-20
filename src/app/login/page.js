@@ -13,7 +13,7 @@ import {
   EyeSlash,
 } from "@gravity-ui/icons";
 import { toast } from "sonner";
-import { signIn } from "@/app/lib/auth-client";
+import { authClient, signIn } from "@/app/lib/auth-client";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -50,12 +50,12 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const result = await signIn.email({
+      const {data, error} = await authClient.signIn.email({
         email: formData.email,
         password: formData.password,
       });
 
-      if (result.error) {
+      if (error) {
         toast.error("Login Failed", {
           description: result.error.message || "Invalid email or password. Please try again.",
         });
@@ -63,8 +63,8 @@ const LoginPage = () => {
         toast.success("Welcome Back!", {
           description: "You have successfully logged in.",
         });
-        router.push("/");
         router.refresh();
+        router.push("/");
       }
     } catch (error) {
       toast.error("Login Error", {
