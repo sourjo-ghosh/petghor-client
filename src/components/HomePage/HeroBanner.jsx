@@ -128,7 +128,7 @@ const HeroBanner = () => {
               className="flex flex-wrap gap-4 mb-12"
             >
               <Link
-                href="/pets"
+                href="/all-pets"
                 className="group inline-flex items-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 hover:-translate-y-0.5"
               >
                 <motion.span

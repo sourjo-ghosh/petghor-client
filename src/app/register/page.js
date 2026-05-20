@@ -17,7 +17,7 @@ import {
 } from "@gravity-ui/icons";
 import { authClient } from "../lib/auth-client";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { addToast } from "@heroui/react";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -155,34 +155,20 @@ const RegisterPage = () => {
     if (!validateForm()) return;
     setIsLoading(true);
 
-    try {
-      const formDataObj = new FormData(e.target);
-      const Userdata = Object.fromEntries(formDataObj);
-
-      const { data, error } = await authClient.signUp.email({
-        name: Userdata.name,
-        email: Userdata.email,
-        password: Userdata.password,
-        image: Userdata.imageUrl,
-      });
-
-      if (error) {
-        toast.error("Registration Failed", {
-          description: error.message || "Something went wrong. Please try again.",
-        });
-      } else if (data) {
-        toast.success("Welcome to PetGhor!", {
-          description: "Your account has been created successfully. Please log in.",
-        });
-        await authClient.signOut();
-        router.push("/login");
-      }
-    } catch (err) {
-      toast.error("Registration Error", {
-        description: "An unexpected error occurred. Please try again later.",
-      });
-    } finally {
-      setIsLoading(false);
+    const formData = new FormData(e.target); // Capture data
+    const Userdata = Object.fromEntries(formData); // Convert to object
+    // console.log(data);
+    const { data, error } = await authClient.signUp.email({
+      name: Userdata.name, // required
+      email: Userdata.email, // required
+      password: Userdata.password, // required
+      image: Userdata.imageUrl,
+      // callbackURL: "/",
+    });
+    setIsLoading(false);
+    await authClient.signOut();
+    if (data) {
+      router.push("/"); 
     }
   };
 
@@ -645,7 +631,7 @@ const RegisterPage = () => {
           </div>
 
           {/* Social Login Buttons */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -671,17 +657,6 @@ const RegisterPage = () => {
                 />
               </svg>
               <span className="text-sm font-medium">Google</span>
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="button"
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-border bg-background hover:bg-muted transition-colors"
-            >
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-              </svg>
-              <span className="text-sm font-medium">Facebook</span>
             </motion.button>
           </div>
         </motion.form>

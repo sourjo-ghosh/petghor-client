@@ -9,7 +9,7 @@ import { authClient, signOut } from '@/app/lib/auth-client';
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/pets', label: 'All Pets' },
+  { href: '/all-pets', label: 'All Pets' },
 ];
 const NavbarDesign1 = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
