@@ -5,7 +5,7 @@ import Link from 'next/link';
 import UserMenu from './UserMenu';
 import ThemeToggle from './ThemeToggle';
 import { Heart, BarsUnaligned, Xmark } from '@gravity-ui/icons';
-import { authClient } from '@/app/lib/auth-client';
+import { authClient, signOut } from '@/app/lib/auth-client';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -17,8 +17,9 @@ const NavbarDesign1 = () => {
   const { data: session } = authClient.useSession();
   const userName = session?.user?.name
   const userEmail = session?.user?.email
-  console.log(session?.user?.email)
-  console.log(session?.user)
+  const userImage = session?.user?.image
+  // console.log( session?.user)
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -45,12 +46,26 @@ const NavbarDesign1 = () => {
 
         {/* Right: Theme Toggle + Auth Section */}
         <div className="flex items-center gap-3 flex-shrink-0">
+          <div className='hidden md:flex lg:flex'>
+          <ThemeToggle />
+          </div>
           {session ? (
-            <UserMenu userName={userName} userEmail={userEmail} />
+            <UserMenu 
+              userName={userName} 
+              userEmail={userEmail}
+              userImage={userImage} 
+              onLogout={() => authClient.signOut()}
+            />
           ) : (
             <div className="flex items-center gap-2">
               <Link
                 href="/login"
+                className="hidden sm:inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                href="/register"
                 className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 Get Started
@@ -95,6 +110,13 @@ const NavbarDesign1 = () => {
               <>
                 <Link
                   href="/login"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="block rounded-lg px-3 py-2 text-base font-medium text-foreground hover:bg-muted"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
                   onClick={() => setIsMobileOpen(false)}
                   className="block rounded-lg bg-primary px-3 py-2 text-base font-medium text-primary-foreground text-center mt-2"
                 >

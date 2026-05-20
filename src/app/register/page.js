@@ -16,8 +16,11 @@ import {
   Xmark,
 } from "@gravity-ui/icons";
 import { authClient } from "../lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const RegisterPage = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -152,18 +155,35 @@ const RegisterPage = () => {
     if (!validateForm()) return;
     setIsLoading(true);
 
-    const formData = new FormData(e.target); // Capture data
-    const Userdata = Object.fromEntries(formData); // Convert to object
-    // console.log(data);
-    const { data, error } = await authClient.signUp.email({
-      name: Userdata.name, // required
-      email: Userdata.email, // required
-      password: Userdata.password, // required
-      image: Userdata.imageUrl,
-      // callbackURL: "https://example.com/callback",
-    });
-    console.log(data, error)
-    setIsLoading(false);
+    try {
+      const formDataObj = new FormData(e.target);
+      const Userdata = Object.fromEntries(formDataObj);
+
+      const { data, error } = await authClient.signUp.email({
+        name: Userdata.name,
+        email: Userdata.email,
+        password: Userdata.password,
+        image: Userdata.imageUrl,
+      });
+
+      if (error) {
+        toast.error("Registration Failed", {
+          description: error.message || "Something went wrong. Please try again.",
+        });
+      } else if (data) {
+        toast.success("Welcome to PetGhor!", {
+          description: "Your account has been created successfully. Please log in.",
+        });
+        await authClient.signOut();
+        router.push("/login");
+      }
+    } catch (err) {
+      toast.error("Registration Error", {
+        description: "An unexpected error occurred. Please try again later.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e) => {

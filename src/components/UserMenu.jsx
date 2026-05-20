@@ -3,18 +3,25 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, LayoutHeaderCells, ArrowRightFromSquare } from '@gravity-ui/icons';
+import Image from 'next/image';
 
-const UserMenu = ({userName, userEmail}) => {
+const UserMenu = ({userName, userEmail, onLogout, userImage}) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // Get initials from user name
+  const getInitials = (name) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
 
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-full p-1 pr-3 transition-colors hover:bg-muted"
+        className="flex items-center gap-2 rounded-full p-2 pr-3 transition-colors hover:bg-muted"
       >
-        <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
-          {userName}
+        <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm">
+          {userImage ? <Image height={40} width={40} alt={userName} src={userImage} className='rounded-full h-9 object-cover'></Image> : getInitials(userName)}
         </div>
         <span className="text-sm font-medium text-foreground hidden sm:block">
           {userName}

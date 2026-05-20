@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Envelope,
@@ -11,8 +12,11 @@ import {
   Eye,
   EyeSlash,
 } from "@gravity-ui/icons";
+import { toast } from "sonner";
+import { signIn } from "@/app/lib/auth-client";
 
 const LoginPage = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -44,13 +48,31 @@ const LoginPage = () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    // Simulate API call
-    const formData = new FormData(e.target); // Capture data
-    const data = Object.fromEntries(formData); // Convert to object
-    console.log(data);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsLoading(false);
-    // Handle login logic here
+
+    try {
+      const result = await signIn.email({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (result.error) {
+        toast.error("Login Failed", {
+          description: result.error.message || "Invalid email or password. Please try again.",
+        });
+      } else {
+        toast.success("Welcome Back!", {
+          description: "You have successfully logged in.",
+        });
+        router.push("/");
+        router.refresh();
+      }
+    } catch (error) {
+      toast.error("Login Error", {
+        description: "Something went wrong. Please try again later.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e) => {
