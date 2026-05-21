@@ -13,7 +13,7 @@ import {
   EyeSlash,
 } from "@gravity-ui/icons";
 import { toast } from "sonner";
-import { authClient, signIn } from "@/app/lib/auth-client";
+import { authClient } from "@/app/lib/auth-client";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -50,14 +50,16 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      const {data, error} = await authClient.signIn.email({
+      const { data, error } = await authClient.signIn.email({
         email: formData.email,
         password: formData.password,
       });
 
       if (error) {
         toast.error("Login Failed", {
-          description: result.error.message || "Invalid email or password. Please try again.",
+          description:
+            result.error.message ||
+            "Invalid email or password. Please try again.",
         });
       } else {
         toast.success("Welcome Back!", {
@@ -265,6 +267,11 @@ const LoginPage = () => {
           {/* Social Login Buttons */}
           <div className="grid grid-cols-1 gap-4">
             <motion.button
+              onClick={() =>
+                authClient.signIn.social({
+                  provider: "google",
+                })
+              }
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="button"

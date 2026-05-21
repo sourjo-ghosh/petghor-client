@@ -18,6 +18,7 @@ import {
 import { authClient } from "../lib/auth-client";
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/react";
+import { toast } from "sonner";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -167,8 +168,16 @@ const RegisterPage = () => {
     });
     setIsLoading(false);
     await authClient.signOut();
-    if (data) {
-      router.push("/"); 
+    if (error){
+      toast.error("Sign Up failed",{
+        description: error.message,
+      });
+    } else{
+      toast.success("Sign Up successful!", {
+        description: "Please Login to continue.",
+      })
+      router.refresh();
+      router.push("/login");
     }
   };
 
@@ -633,6 +642,11 @@ const RegisterPage = () => {
           {/* Social Login Buttons */}
           <div className="grid grid-cols-1 gap-4">
             <motion.button
+              onClick={() =>
+                authClient.signIn.social({
+                  provider: "google",
+                })
+              }
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="button"

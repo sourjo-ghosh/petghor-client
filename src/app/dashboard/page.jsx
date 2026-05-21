@@ -17,21 +17,21 @@ const DashboardPage = () => {
 
   const quickActions = [
     { 
-      href: '/dashboard/add-pets', 
+      href: '/dashboard/my-listing', 
       title: 'Add New Pet', 
       description: 'List a pet for adoption',
       icon: Plus,
       color: 'from-primary to-primary/80'
     },
     { 
-      href: '/dashboard/my-listings', 
+      href: '/dashboard/my-listing', 
       title: 'My Listings', 
       description: 'View and manage your pets',
       icon: ListIcon,
       color: 'from-blue-500 to-blue-600'
     },
     { 
-      href: '/dashboard/my-requests', 
+      href: '/dashboard/my-request', 
       title: 'My Requests', 
       description: 'View adoption requests',
       icon: Heart,
@@ -52,7 +52,7 @@ const DashboardPage = () => {
               <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
               <p className="text-muted-foreground mt-1">Welcome back, {userName}!</p>
             </div>
-            <Link href="/dashboard/add-pets">
+            <Link href="/dashboard/my-listing">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

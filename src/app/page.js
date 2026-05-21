@@ -9,7 +9,7 @@ import { getPetsForShowCase } from "./lib/data";
 
 export default async function Home() {
   const sixPets = await getPetsForShowCase()
-  console.log(sixPets)
+  // console.log(sixPets)
   return (
     <main className="overflow-hidden">
       <HeroBanner />
