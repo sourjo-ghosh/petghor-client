@@ -11,7 +11,7 @@ const SkeletonCard = () => (
   <div className="group bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300">
     {/* Image Skeleton */}
     <div className="relative aspect-square bg-muted overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite]" 
+      <div className="absolute inset-0 bg-linear-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite]" 
         style={{ 
           backgroundSize: '200% 100%',
         }} 
@@ -122,7 +122,7 @@ const PetsCard = ({ pets, isLoading = false }) => {
                       className="object-cover transition-all duration-700 group-hover:scale-110"
                     />
                     {/* Gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
 
                     {/* Top badges row */}
                     <div className="absolute top-4 left-4 right-4 flex items-start justify-between">
@@ -135,8 +135,8 @@ const PetsCard = ({ pets, isLoading = false }) => {
                       {pet.gender && (
                         <span className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm ${
                           pet.gender === "Female"
-                            ? "bg-gradient-to-r from-rose-400 to-pink-500 text-white"
-                            : "bg-gradient-to-r from-sky-400 to-blue-500 text-white"
+                            ? "bg-linear-to-r from-rose-400 to-pink-500 text-white"
+                            : "bg-linear-to-r from-sky-400 to-blue-500 text-white"
                         }`}>
                           {pet.gender === "Female" ? "♀" : "♂"}
                           {pet.gender}
@@ -171,7 +171,7 @@ const PetsCard = ({ pets, isLoading = false }) => {
                       {pet.location && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/60 text-xs font-medium text-muted-foreground">
                           <MapPin className="h-3.5 w-3.5 text-primary" />
-                          <span className="truncate max-w-[120px]">
+                          <span className="truncate max-w-30">
                             {pet.location}
                           </span>
                         </div>
@@ -192,14 +192,16 @@ const PetsCard = ({ pets, isLoading = false }) => {
                       >
                         View Details
                       </Link>
+                      <Link href={`/all-pets/${pet._id}/adopt`}>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-primary to-primary/80 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-200"
-                      >
+                        className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-linear-to-r from-primary to-primary/80 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all duration-200"
+                        >
                         <Heart className="h-4 w-4 fill-current" />
                         Adopt Me
                       </motion.button>
+                        </Link>
                     </div>
                   </div>
                 </motion.div>

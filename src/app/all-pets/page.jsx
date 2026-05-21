@@ -35,7 +35,8 @@ const AllPetsPage = () => {
       }
       setLoading(isFirstLoad);
       
-      let url = "http://localhost:8000/all-pets?";
+      // let url = `${process.env.SERVER_URL}/all-pets?`;
+      let url = `${process.env.NEXT_PUBLIC_SERVER_URL}/all-pets?`;
       if (selectedCategory !== "All") {
         url += `species=${selectedCategory}`;
       }
@@ -58,7 +59,7 @@ const AllPetsPage = () => {
   // console.log(pets)
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
+      <div className="min-h-screen bg-linear-to-b from-background via-background to-muted/30">
         {/* Skeleton Hero */}
         <section className="relative pt-16 pb-12 lg:pt-24 lg:pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -102,7 +103,7 @@ const AllPetsPage = () => {
                 <div key={i} className="bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm">
                   {/* Image Skeleton - Square aspect ratio */}
                   <div className="relative aspect-square bg-muted overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite]" 
+                    <div className="absolute inset-0 bg-linear-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite]" 
                       style={{ backgroundSize: '200% 100%' }} 
                     />
                   </div>
@@ -136,13 +137,13 @@ const AllPetsPage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30">
+    <main className="min-h-screen bg-linear-to-b from-background via-background to-muted/30">
       {/* Hero Section */}
       <section className="relative pt-16 pb-12 lg:pt-24 lg:pb-16 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-3xl" />
+          <div className="absolute top-0 left-1/4 w-125 h-125 bg-primary/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 w-100 h-100 bg-secondary/10 rounded-full blur-3xl" />
           {/* Grid Pattern */}
           <div 
             className="absolute inset-0 opacity-[0.02]"
@@ -164,7 +165,7 @@ const AllPetsPage = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.4 }}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-5"
+              className="inline-flex items-center gap-2 bg-linear-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-5"
             >
               <PawPrint className="h-4 w-4 text-primary" />
               <span className="text-sm font-semibold text-primary">

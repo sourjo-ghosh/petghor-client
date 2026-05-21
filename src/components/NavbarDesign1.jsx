@@ -6,12 +6,15 @@ import UserMenu from './UserMenu';
 import ThemeToggle from './ThemeToggle';
 import { Heart, BarsUnaligned, Xmark } from '@gravity-ui/icons';
 import { authClient, signOut } from '@/app/lib/auth-client';
+import { usePathname } from 'next/navigation';
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/all-pets', label: 'All Pets' },
 ];
 const NavbarDesign1 = () => {
+  const pathName = usePathname()
+  // console.log(pathName)
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   // const { user, login, logout } = useAuth();
   const { data: session } = authClient.useSession();
@@ -37,7 +40,9 @@ const NavbarDesign1 = () => {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className={`rounded-lg px-4 py-2 text-sm font-medium text-muted-foreground transition-colors
+                 ${pathName === link.href ? "bg-muted text-foreground" : ""}
+               hover:bg-muted hover:text-foreground`}
             >
               {link.label}
             </Link>
@@ -97,7 +102,9 @@ const NavbarDesign1 = () => {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileOpen(false)}
-                className="block rounded-lg px-3 py-2 text-base font-medium text-foreground hover:bg-muted"
+                className={`block rounded-lg px-3 py-2 text-base font-medium text-foreground hover:bg-muted
+                  ${pathName === link.href ? "bg-muted text-foreground" : ""}
+                  `}
               >
                 {link.label}
               </Link>

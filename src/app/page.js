@@ -5,12 +5,15 @@ import AdoptionProcess from "@/components/HomePage/AdoptionProcess";
 import SuccessStories from "@/components/HomePage/SuccessStories";
 import PetCareTips from "@/components/HomePage/PetCareTips";
 import JoinCommunity from "@/components/HomePage/JoinCommunity";
+import { getPetsForShowCase } from "./lib/data";
 
-export default function Home() {
+export default async function Home() {
+  const sixPets = await getPetsForShowCase()
+  console.log(sixPets)
   return (
     <main className="overflow-hidden">
       <HeroBanner />
-      <PetsShowcase />
+      <PetsShowcase  sixPets={sixPets}/>
       <WhyAdopt />
       <AdoptionProcess />
       <SuccessStories />
