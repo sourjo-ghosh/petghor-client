@@ -80,8 +80,8 @@ const WhyAdopt = () => {
     <section className="py-24 bg-background relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-primary/5 to-accent/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-secondary/10 to-primary/5 rounded-full blur-3xl" />
+        <div className="absolute top-20 right-0 w-150 h-150 bg-linear-to-bl from-primary/5 to-accent/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-100 h-100 bg-linear-to-tr from-secondary/10 to-primary/5 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -106,7 +106,7 @@ const WhyAdopt = () => {
 
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
               Why Adopt a{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-accent">
                 Pet?
               </span>
             </h2>
@@ -130,9 +130,9 @@ const WhyAdopt = () => {
                 alt="Happy adopted pet with owner"
                 width={600}
                 height={400}
-                className="object-cover w-full h-[300px]"
+                className="object-cover w-full h-75"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-background/60 via-transparent to-transparent" />
               
               {/* Floating Stats */}
               <motion.div
@@ -173,7 +173,7 @@ const WhyAdopt = () => {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className={`group p-6 rounded-2xl ${reason.bgColor} border border-border hover:border-primary/30 transition-all duration-300`}
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${reason.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${reason.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <reason.icon className="h-6 w-6 text-white" />
                 </div>
                 <h3 className="text-lg font-bold text-foreground mb-2">{reason.title}</h3>

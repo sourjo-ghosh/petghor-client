@@ -87,7 +87,7 @@ const PetsShowcase = ({sixPets}) => {
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent" />
                 
                 {/* Gender Badge */}
                 <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-medium ${

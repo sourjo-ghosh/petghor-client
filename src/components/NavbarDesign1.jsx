@@ -24,10 +24,10 @@ const NavbarDesign1 = () => {
   // console.log( session?.user)
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Logo */}
-        <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+        <Link href="/" className="flex items-center gap-2 shrink-0">
           <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center">
             <Heart className="h-6 w-6 text-primary-foreground" />
           </div>
@@ -50,7 +50,7 @@ const NavbarDesign1 = () => {
         </div>
 
         {/* Right: Theme Toggle + Auth Section */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-3 shrink-0">
           <div className='hidden md:flex lg:flex'>
           <ThemeToggle />
           </div>

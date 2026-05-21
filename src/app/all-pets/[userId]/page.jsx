@@ -53,7 +53,7 @@ if (loading) {
             {/* Image Skeleton */}
             <div className="space-y-4">
               <div className="relative aspect-square rounded-3xl bg-muted overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite]" 
+                <div className="absolute inset-0 bg-linear-to-r from-muted via-muted/50 to-muted animate-[shimmer_1.5s_ease-in-out_infinite]" 
                   style={{ backgroundSize: '200% 100%' }} 
                 />
               </div>
@@ -166,8 +166,8 @@ if (loading) {
                   <span
                     className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm ${
                       pet.gender === "Female"
-                        ? "bg-gradient-to-r from-rose-400 to-pink-500 text-white"
-                        : "bg-gradient-to-r from-sky-400 to-blue-500 text-white"
+                        ? "bg-linear-to-r from-rose-400 to-pink-500 text-white"
+                        : "bg-linear-to-r from-sky-400 to-blue-500 text-white"
                     }`}
                   >
                     {pet.gender === "Female" ? "♀" : "♂"} {pet.gender}
@@ -270,7 +270,7 @@ if (loading) {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="flex-1 py-4 px-6 rounded-2xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2"
+                className="flex-1 py-4 px-6 rounded-2xl bg-linear-to-r from-primary to-primary/80 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2"
                 >
                 <Heart className="h-5 w-5 fill-current" />
                 Adopt {pet.petName}
