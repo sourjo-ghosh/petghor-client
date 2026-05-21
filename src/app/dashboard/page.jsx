@@ -1,17 +1,32 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Plus, ListIcon, Heart } from 'lucide-react';
 import { authClient } from '@/app/lib/auth-client';
+import { getMyListings } from '../lib/data';
 
 const DashboardPage = () => {
   const { data: session } = authClient.useSession();
   const userName = session?.user?.name;
-
-  const stats = [
-    { label: 'Total Listings', value: '0', icon: ListIcon, color: 'bg-blue-100/20 text-blue-600' },
+  const [totalListings, setTotalListings] = useState(0);
+  useEffect(() => {
+      async function loadPets() {
+        try {
+          const myListings = await getMyListings(session?.user?.email);
+          setTotalListings(myListings.length);
+        } catch (error) {
+          console.error("Failed to fetch pets:", error);
+          setTotalListings(0);
+        } finally {
+          setLoading(false);
+        }
+      }
+      loadPets();
+    }, [session?.user?.email]);
+  let stats = [
+    { label: 'Total Listings', value: totalListings, icon: ListIcon, color: 'bg-blue-100/20 text-blue-600' },
     { label: 'Adoption Requests', value: '0', icon: Heart, color: 'bg-rose-100/20 text-rose-600' },
   ];
 
@@ -24,7 +39,7 @@ const DashboardPage = () => {
       color: 'from-primary to-primary/80'
     },
     { 
-      href: '/dashboard/my-listing', 
+      href: '/dashboard/my-listings', 
       title: 'My Listings', 
       description: 'View and manage your pets',
       icon: ListIcon,
@@ -52,7 +67,7 @@ const DashboardPage = () => {
               <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
               <p className="text-muted-foreground mt-1">Welcome back, {userName}!</p>
             </div>
-            <Link href="/dashboard/my-listing">
+            <Link href="/dashboard/add-pets">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

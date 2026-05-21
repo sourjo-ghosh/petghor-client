@@ -23,9 +23,9 @@ const UserMenu = ({userName, userEmail, onLogout, userImage}) => {
         <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium text-sm">
           {userImage ? <Image height={40} width={40} alt={userName} src={userImage} className='rounded-full h-9 object-cover'></Image> : getInitials(userName)}
         </div>
-        <span className="text-sm font-medium text-foreground hidden sm:block">
+        {/* <span className="text-sm font-medium text-foreground hidden sm:block">
           {userName}
-        </span>
+        </span> */}
         <ChevronDown 
           className={`h-4 w-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
         />
@@ -34,7 +34,7 @@ const UserMenu = ({userName, userEmail, onLogout, userImage}) => {
       {isOpen && (
         <>
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-50"
             onClick={() => setIsOpen(false)}
           />
           <div className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-border bg-background shadow-lg z-50 py-2">

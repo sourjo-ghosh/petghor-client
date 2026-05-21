@@ -8,8 +8,4 @@ export const PostPet = async (formData)=>{
     });
     const data = await res.json()
     return data;
-    
-    
-    
-   
 }

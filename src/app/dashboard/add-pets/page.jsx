@@ -26,6 +26,7 @@ const vaccinationStatusOptions = [
 export default function AddPetsPage() {
   const { data: session } = authClient.useSession();
   const userEmail = session?.user?.email || "";
+  const userName = session?.user?.name || "";
   // console.log(userEmail);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const handleSubmit = async (e) => {
@@ -33,14 +34,14 @@ export default function AddPetsPage() {
     const data = new FormData(e.target);
     const formData = Object.fromEntries(data.entries());
     console.log(formData);
-     try{
+    try {
       setIsSubmitting(true);
       const result = await PostPet(formData);
-      console.log(result)
+      console.log(result);
       setIsSubmitting(false);
-    } catch(error){
-        console.error("Error posting pet:", error);
-        throw error;
+    } catch (error) {
+      console.error("Error posting pet:", error);
+      throw error;
     }
   };
 
@@ -62,31 +63,6 @@ export default function AddPetsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-card rounded-3xl border border-border/60 shadow-sm p-8"
         >
-          {/* {submitStatus === "success" && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 rounded-xl bg-green-100/20 border border-green-200/50 flex items-center gap-3"
-            >
-              <CheckCircle2 className="h-5 w-5 text-green-600" />
-              <span className="text-sm font-medium text-green-700">
-                Pet added successfully!
-              </span>
-            </motion.div>
-          )} */}
-          {/* {submitStatus === "error" && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 rounded-xl bg-red-100/20 border border-red-200/50 flex items-center gap-3"
-            >
-              <AlertCircle className="h-5 w-5 text-red-600" />
-              <span className="text-sm font-medium text-red-700">
-                Error adding pet. Try again.
-              </span>
-            </motion.div>
-          )} */}
-
           <form onSubmit={handleSubmit} className="space-y-8">
             <div>
               <h2 className="text-lg font-bold text-foreground mb-5 flex items-center gap-2">
@@ -284,6 +260,18 @@ export default function AddPetsPage() {
                     type="email"
                     name="ownerEmail"
                     value={userEmail}
+                    readOnly
+                    className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-muted/40 text-foreground cursor-not-allowed opacity-60"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    Owner Name (Read Only)
+                  </label>
+                  <input
+                    type="text"
+                    name="ownerName"
+                    value={userName}
                     readOnly
                     className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-muted/40 text-foreground cursor-not-allowed opacity-60"
                   />
