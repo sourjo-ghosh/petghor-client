@@ -5,11 +5,9 @@ export const getPetByID = async (userId)=>{
     return data;
 }
 export const getPetsForShowCase = async () =>{
-    // const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/all-pets`;
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/all-pets`);
     const data = await res.json()
     const sixPet= data.data.slice(0,6)
-    // console.log(sixPet)
     return sixPet;
 }
 

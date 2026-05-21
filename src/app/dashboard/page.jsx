@@ -17,7 +17,7 @@ const DashboardPage = () => {
 
   const quickActions = [
     { 
-      href: '/dashboard/my-listing', 
+      href: '/dashboard/add-pets', 
       title: 'Add New Pet', 
       description: 'List a pet for adoption',
       icon: Plus,
@@ -118,7 +118,7 @@ const DashboardPage = () => {
           </motion.div>
         </div>
 
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -133,7 +133,7 @@ const DashboardPage = () => {
               <p className="text-muted-foreground">No activity yet. Start by adding a pet or checking adoption requests!</p>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
       </main>
     </div>
   );
