@@ -217,9 +217,26 @@ const AdoptPage = ({ params }) => {
             className="lg:col-span-2"
           >
             <div className="bg-card rounded-3xl border border-border/60 shadow-sm p-8">
-              <h2 className="text-2xl font-bold text-foreground mb-8">Adoption Request</h2>
+              {pet?.ownerEmail === userEmail ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
+                    <Heart className="h-8 w-8 text-red-500" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground">Can't Adopt Your Own Pet</h2>
+                  <p className="text-muted-foreground max-w-sm">
+                    You are the owner of this pet. You can manage it from your listings instead.
+                  </p>
+                  <Link href="/dashboard/my-listings">
+                    <button className="mt-4 px-6 py-2 rounded-lg bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+                      Go to My Listings
+                    </button>
+                  </Link>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-2xl font-bold text-foreground mb-8">Adoption Request</h2>
               
-              <form onSubmit={handleSubmit} className="space-y-5">
+                  <form onSubmit={handleSubmit} className="space-y-5">
                 {/* Pet Information */}
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">Pet Name</label>
@@ -289,7 +306,9 @@ const AdoptPage = ({ params }) => {
                   <Heart className="h-5 w-5" />
                   {submitting ? 'Submitting...' : 'Submit Adoption Request'}
                 </button>
-              </form>
+                  </form>
+                </>
+              )}
             </div>
           </motion.div>
         </div>
