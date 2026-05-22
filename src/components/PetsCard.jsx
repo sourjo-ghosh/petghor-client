@@ -115,6 +115,7 @@ const PetsCard = ({ pets, isLoading = false }) => {
                 >
                   {/* Image Container - Square aspect ratio for modern look */}
                   <div className="relative aspect-square overflow-hidden">
+                    <p>{pet?.status}</p>
                     <Image
                       src={pet.imageURL || "/bannerImage2.webp"}
                       alt={pet.petName}
@@ -146,15 +147,20 @@ const PetsCard = ({ pets, isLoading = false }) => {
 
                     {/* Bottom info overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-5">
+
                       <motion.h3 
                         className="text-2xl font-bold text-white mb-1 drop-shadow-lg"
                         layoutId={`name-${pet._id}`}
-                      >
+                        >
                         {pet.petName}
                       </motion.h3>
+                        
                       <p className="text-sm text-white/90 font-medium drop-shadow-md">
                         {pet.breed || pet.type}
                       </p>
+                      <p className="text-lg font-semibold text-white/90 drop-shadow-lg">
+                        {pet.status ? pet.status.slice(0, 1).toUpperCase() + pet.status.slice(1) : 'Available'}
+                        </p>
                     </div>
                   </div>
 

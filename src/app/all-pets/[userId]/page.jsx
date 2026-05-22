@@ -266,16 +266,36 @@ if (loading) {
 
             {/* CTA Buttons */}
             <div className="flex gap-3 pt-4">
+              {pet.status === "adopted" ? (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex-1 py-4 px-6 rounded-2xl bg-muted/40 text-muted-foreground font-semibold shadow-lg shadow-muted/25 hover:shadow-muted/40 transition-all flex items-center justify-center gap-2"
+                >
+                  Adopted
+                </motion.button>
+              ) : (
                 <Link href={`${pet._id}/adopt`}>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="flex-1 py-4 px-6 rounded-2xl bg-linear-to-r from-primary to-primary/80 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Heart className="h-5 w-5 fill-current" />
+                    Adopt {pet.petName}
+                  </motion.button>
+                </Link>
+              )}
+              {/* <Link href={`${pet._id}/adopt`}>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="flex-1 py-4 px-6 rounded-2xl bg-linear-to-r from-primary to-primary/80 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2"
-                >
+              >
                 <Heart className="h-5 w-5 fill-current" />
                 Adopt {pet.petName}
               </motion.button>
-                </Link>
+                </Link> */}
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

@@ -40,14 +40,14 @@ export default function MyListingsPage() {
     try {
       const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/adoptions/pet-requests?petId=${petId}`;
       // console.log("🔍 Fetching from:", url);
-      
+
       const res = await fetch(url);
       // console.log("📊 Response status:", res.status);
-      
+
       if (!res.ok) {
         throw new Error(`API error: ${res.status}`);
       }
-      
+
       const data = await res.json();
       // setRequests(data?.data);
       setRequests(data?.data || []);
@@ -60,30 +60,40 @@ export default function MyListingsPage() {
     }
   };
 
-  const handleUpdateStatus = async (requestId, newStatus) => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/adoptions/update-status`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ requestId, status: newStatus })
-        }
-      );
-      const data = await res.json();
-      
-      if (data.success) {
-        toast.success(`Request ${newStatus}!`);
-        // Update local state
-        setRequests(requests.map(req => 
-          req._id === requestId ? { ...req, status: newStatus } : req
-        ));
-      } else {
-        toast.error("Failed to update status");
-      }
-    } catch (error) {
-      console.error("Error updating status:", error);
-      toast.error("Error updating status");
+  const handleApprove = async (requestId, petId) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/adoptions/approve`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId, petId }),
+      },
+    );
+    const data = await res.json();
+    if (data.success) {
+      console.log("requestId:", requestId, "petId:", petId);
+      toast.success(data.message || "Approved!");
+    } else {
+      toast.error(data.message || "Failed to approve request!");
+    }
+  };
+
+  const handleReject = async (requestId, petId) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/adoptions/reject`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId, petId }),
+      },
+    );
+    const data = await res.json();
+
+    if (data.success) {
+      console.log("requestId:", requestId, "petId:", petId);
+      toast.success(data.message || "Rejected!");
+    } else {
+      toast.error(data.message || "Failed to reject request!");
     }
   };
 
@@ -128,7 +138,7 @@ export default function MyListingsPage() {
                 No Listings Yet
               </h2>
               <p className="text-muted-foreground mb-6">
-                You haven't added any pets for adoption.
+                You haven&apos;t added any pets for adoption.
               </p>
               <Link href="/dashboard/add-pets">
                 <motion.button
@@ -174,15 +184,32 @@ export default function MyListingsPage() {
 
                 <div className="p-6 space-y-4">
                   <div>
-                    <h3 className="text-xl font-bold text-foreground mb-2">
-                      {pet.petName}
-                    </h3>
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="text-xl font-bold text-foreground">
+                        {pet.petName}
+                      </h3>
+                      {pet?.status && (
+                        <span className={`px-2 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${
+                          pet.status === 'available' ? 'bg-green-100 text-green-700' :
+                          pet.status === 'adopted' ? 'bg-blue-100 text-blue-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>
+                          {pet.status.slice(0, 1).toUpperCase() + pet.status.slice(1)}
+                        </span>
+                      )}
+                    </div>
                     <div className="space-y-1 text-sm">
                       <p className="text-muted-foreground">
-                        <span className="font-semibold text-foreground">Breed:</span> {pet.breed}
+                        <span className="font-semibold text-foreground">
+                          Breed:
+                        </span>{" "}
+                        {pet.breed}
                       </p>
                       <p className="text-muted-foreground">
-                        <span className="font-semibold text-foreground">Species:</span> {pet.species}
+                        <span className="font-semibold text-foreground">
+                          Species:
+                        </span>{" "}
+                        {pet.species}
                       </p>
                     </div>
                   </div>
@@ -205,7 +232,12 @@ export default function MyListingsPage() {
                     </button>
                     <button
                       onClick={() => {
-                        console.log("🔗 Button clicked with pet._id:", pet._id, "Type:", typeof pet._id);
+                        console.log(
+                          "🔗 Button clicked with pet._id:",
+                          pet._id,
+                          "Type:",
+                          typeof pet._id,
+                        );
                         handleViewRequests(pet._id);
                       }}
                       className="px-3 py-2 rounded-lg border border-green-200 text-green-600 font-semibold text-sm hover:bg-green-50 transition-colors"
@@ -239,7 +271,9 @@ export default function MyListingsPage() {
             >
               {/* Modal Header */}
               <div className="sticky top-0 bg-card border-b border-border/60 px-6 py-4 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-foreground">Adoption Requests</h2>
+                <h2 className="text-xl font-bold text-foreground">
+                  Adoption Requests
+                </h2>
                 <button
                   onClick={() => setSelectedPetId(null)}
                   className="p-2 hover:bg-muted rounded-lg transition-colors"
@@ -251,11 +285,15 @@ export default function MyListingsPage() {
               {/* Modal Content */}
               <div className="p-6">
                 {loadingRequests ? (
-                  <p className="text-center text-muted-foreground py-8">Loading requests...</p>
+                  <p className="text-center text-muted-foreground py-8">
+                    Loading requests...
+                  </p>
                 ) : requests.length === 0 ? (
                   <div className="text-center py-8">
                     <Package className="h-12 w-12 text-muted-foreground/30 mx-auto mb-2" />
-                    <p className="text-muted-foreground">No adoption requests yet</p>
+                    <p className="text-muted-foreground">
+                      No adoption requests yet
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -266,33 +304,48 @@ export default function MyListingsPage() {
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <h3 className="font-bold text-foreground">{request.requesterName}</h3>
-                            <p className="text-sm text-muted-foreground">{request.requesterEmail}</p>
+                            <h3 className="font-bold text-foreground">
+                              {request.requesterName}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {request.requesterEmail}
+                            </p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            request.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                            request.status === 'approved' ? 'bg-green-100 text-green-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                              request.status === "pending"
+                                ? "bg-yellow-100 text-yellow-700"
+                                : request.status === "approved"
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-red-100 text-red-700"
+                            }`}
+                          >
                             {request.status}
                           </span>
                         </div>
-                        <p className="text-sm text-foreground mb-2">{request.message}</p>
-                        <p className="text-xs text-muted-foreground mb-3">
-                          Pickup: {new Date(request.pickupDate).toLocaleDateString()}
+                        <p className="text-sm text-foreground mb-2">
+                          {request.message}
                         </p>
-                        
+                        <p className="text-xs text-muted-foreground mb-3">
+                          Pickup:{" "}
+                          {new Date(request.pickupDate).toLocaleDateString()}
+                        </p>
+
                         {/* Action Buttons */}
-                        {request.status === 'pending' && (
+                        {request.status === "pending" && (
                           <div className="flex gap-2">
                             <button
-                              onClick={() => handleUpdateStatus(request._id, 'approved')}
+                              onClick={() =>
+                                handleApprove(request._id, selectedPetId)
+                              }
                               className="flex-1 px-3 py-2 rounded-lg bg-green-100 text-green-700 font-semibold text-sm hover:bg-green-200 transition-colors"
                             >
                               Accepted
                             </button>
                             <button
-                              onClick={() => handleUpdateStatus(request._id, 'rejected')}
+                              onClick={() =>
+                                handleReject(request._id, selectedPetId)
+                              }
                               className="flex-1 px-3 py-2 rounded-lg bg-red-100 text-red-700 font-semibold text-sm hover:bg-red-200 transition-colors"
                             >
                               Rejected

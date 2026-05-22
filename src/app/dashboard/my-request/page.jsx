@@ -1,10 +1,22 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Heart } from 'lucide-react';
 
+import { authClient } from '@/app/lib/auth-client';
+
 export default function MyRequestsPage() {
+    const { data: session } = authClient.useSession();
+  console.log(session?.user?.email);
+  const userEmail = session?.user?.email;
+  useEffect(() => {
+    if (!userEmail) {
+      // Handle the case where the user email is not available
+      console.error('User email is not available');
+      return;
+    }
+
   return (
     <div className="min-h-screen bg-linear-to-b from-background via-background to-muted/30">
       <motion.header

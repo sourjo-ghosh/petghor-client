@@ -23,6 +23,7 @@ const vaccinationStatusOptions = [
   "Partially Vaccinated",
   "Not Vaccinated",
 ];
+const petStatusOptions = ["Available", "Adopted"];
 
 export default function AddPetsPage() {
   const { data: session } = authClient.useSession();
