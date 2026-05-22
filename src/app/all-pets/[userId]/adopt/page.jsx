@@ -3,55 +3,31 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Heart, Loader, CheckCircle2, AlertCircle, Send } from 'lucide-react';
+import { ArrowLeft, Heart } from 'lucide-react';
+import { toast } from 'sonner';
 import { authClient } from '@/app/lib/auth-client';
 import Image from 'next/image';
+import { getPetByID } from '@/app/lib/data';
+import { adoptPet } from '@/app/lib/actions';
 
 const AdoptPage = ({ params }) => {
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const [userId, setUserId] = useState(null);
-
+  
   const { data: session } = authClient.useSession();
   const userName = session?.user?.name;
   const userEmail = session?.user?.email;
-
-  const [formData, setFormData] = useState({
-    petName: '',
-    userName: '',
-    userEmail: '',
-    pickupDate: '',
-    message: '',
-    status: 'pending',
-  });
-
-  // Update form when session data changes
-  useEffect(() => {
-    if (userName || userEmail) {
-      setFormData(prev => ({
-        ...prev,
-        userName: userName || '',
-        userEmail: userEmail || '',
-      }));
-    }
-  }, [userName, userEmail]);
-
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
         const { userId: id } = await params;
         setUserId(id);
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/all-pets/${id}`);
-        const petData = await res.json();
+        const petData = await getPetByID(id);
         setPet(petData.data);
-
-        // Update form with pet name
-        setFormData(prev => ({
-          ...prev,
-          petName: petData.data?.petName || '',
-        }));
+        // console.log('Pet data:', petData.data);
       } catch (error) {
         console.error('Error fetching pet:', error);
       } finally {
@@ -61,53 +37,53 @@ const AdoptPage = ({ params }) => {
     fetchData();
   }, [params]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
+    setSubmitting(true);
 
     try {
-      // Submit adoption request
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/adoption-requests`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          petId: userId,
-          petName: formData.petName,
-          userName: formData.userName,
-          userEmail: formData.userEmail,
-          pickupDate: formData.pickupDate,
-          message: formData.message,
-          status: 'pending',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit adoption request');
+      const formData = new FormData(e.target);
+      
+      const adoptionData = {
+        petId: pet._id,
+        petName: pet.petName, 
+        petImage: pet.imageURL,
+        ownerEmail: pet.ownerEmail || "petGhor shelter",
+        requesterEmail: session?.user?.email,
+        requesterName: session?.user?.name,
+        pickupDate: formData.get('pickupDate'),
+        message: formData.get('message'),
+        status: "pending",
+        requestDate: new Date()
+      };
+      
+      console.log('Adoption Request Data:', adoptionData);
+      
+      const response = await adoptPet(adoptionData);
+      
+      if (response.success) {
+        toast.success('Adoption request submitted! 🎉', {
+          description: 'We will review your request and contact you soon.',
+          duration: 4000
+        });
+        e.target.reset();
+        setTimeout(() => {
+          window.location.href = userId ? `/all-pets/${userId}` : '/all-pets';
+        }, 2000);
+      } else {
+        toast.error('Adoption request failed', {
+          description: response.message || 'Please try again.',
+          duration: 4000
+        });
       }
-
-      setSubmitStatus('success');
-      setFormData(prev => ({
-        ...prev,
-        pickupDate: '',
-        message: '',
-      }));
-      setTimeout(() => setSubmitStatus(null), 3000);
     } catch (error) {
-      console.error('Error submitting form:', error);
-      setSubmitStatus('error');
+      console.error('Adoption error:', error);
+      toast.error('Something went wrong', {
+        description: error.message || 'Please try again later.',
+        duration: 4000
+      });
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
@@ -149,134 +125,13 @@ const AdoptPage = ({ params }) => {
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium">Back</span>
           </Link>
-          <h1 className="text-xl font-bold text-foreground">Adopt {formData.petName}</h1>
+          <h1 className="text-xl font-bold text-foreground">Adopt {pet?.petName}</h1>
           <div className="w-8" />
         </div>
       </motion.header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Form Section */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-2"
-          >
-            <div className="bg-card rounded-3xl border border-border/60 shadow-sm p-8">
-              {/* Status Messages */}
-              {submitStatus === 'success' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 rounded-xl bg-green-100/20 border border-green-200/50 flex items-center gap-3"
-                >
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span className="text-sm font-medium text-green-700">
-                    Adoption request submitted successfully! We'll contact you soon.
-                  </span>
-                </motion.div>
-              )}
-              {submitStatus === 'error' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 rounded-xl bg-red-100/20 border border-red-200/50 flex items-center gap-3"
-                >
-                  <AlertCircle className="h-5 w-5 text-red-600" />
-                  <span className="text-sm font-medium text-red-700">
-                    Something went wrong. Please try again.
-                  </span>
-                </motion.div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Pet Name - Read Only */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Pet Name</label>
-                  <input
-                    type="text"
-                    name="petName"
-                    value={formData.petName}
-                    readOnly
-                    className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-muted/40 text-foreground cursor-not-allowed opacity-60"
-                  />
-                </div>
-
-                {/* User Name - Read Only */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Your Name</label>
-                  <input
-                    type="text"
-                    name="userName"
-                    value={formData.userName}
-                    readOnly
-                    className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-muted/40  cursor-not-allowed opacity-60"
-                  />
-                </div>
-
-                {/* User Email - Read Only */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Your Email</label>
-                  <input
-                    type="email"
-                    name="userEmail"
-                    value={formData.userEmail}
-                    readOnly
-                    className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-muted/40 text-foreground cursor-not-allowed opacity-60"
-                  />
-                </div>
-
-                {/* Pickup Date */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Preferred Pickup Date *</label>
-                  <input
-                    type="date"
-                    name="pickupDate"
-                    value={formData.pickupDate}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-                  />
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">Message *</label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows="5"
-                    className="w-full px-4 py-2.5 rounded-xl border border-border/60 bg-card focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all resize-none"
-                    placeholder="Tell us a bit about yourself and why you want to adopt this pet..."
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit"
-                  disabled={isSubmitting || !formData.pickupDate || !formData.message}
-                  className="w-full py-4 px-6 rounded-2xl bg-linear-to-r from-primary to-primary/80 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader className="h-5 w-5 animate-spin" />
-                      Submitting...
-                    </>
-                  ) : (
-                    <>
-                      <Heart className="h-5 w-5 fill-current" />
-                      Adopt {formData.petName}
-                    </>
-                  )}
-                </motion.button>
-              </form>
-            </div>
-          </motion.div>
-
           {/* Sidebar - Pet Summary */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -352,6 +207,89 @@ const AdoptPage = ({ params }) => {
                   <li>✓ We'll review & contact you</li>
                 </ul>
               </div>
+            </div>
+          </motion.div>
+
+          {/* Main Form */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-2"
+          >
+            <div className="bg-card rounded-3xl border border-border/60 shadow-sm p-8">
+              <h2 className="text-2xl font-bold text-foreground mb-8">Adoption Request</h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Pet Information */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Pet Name</label>
+                  <input
+                    type="text"
+                    value={pet?.petName || ''}
+                    readOnly
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-muted text-foreground cursor-not-allowed opacity-60"
+                  />
+                </div>
+
+                {/* User Information */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Your Name</label>
+                    <input
+                      type="text"
+                      value={userName || ''}
+                      readOnly
+                      className="w-full px-4 py-2.5 rounded-lg border border-border bg-muted text-foreground cursor-not-allowed opacity-60"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Your Email</label>
+                    <input
+                      type="email"
+                      value={userEmail || ''}
+                      readOnly
+                      className="w-full px-4 py-2.5 rounded-lg border border-border bg-muted text-foreground cursor-not-allowed opacity-60"
+                    />
+                  </div>
+                </div>
+
+                {/* Pickup Date */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Preferred Pickup Date</label>
+                  <input
+                    type="date"
+                    name="pickupDate"
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    required
+                  />
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">Message</label>
+                  <textarea
+                    name="message"
+                    rows="4"
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                    placeholder="Tell us why you want to adopt this pet..."
+                    required
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all ${
+                    submitting 
+                      ? 'bg-primary/50 cursor-not-allowed opacity-70' 
+                      : 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm hover:shadow-md'
+                  }`}
+                >
+                  <Heart className="h-5 w-5" />
+                  {submitting ? 'Submitting...' : 'Submit Adoption Request'}
+                </button>
+              </form>
             </div>
           </motion.div>
         </div>

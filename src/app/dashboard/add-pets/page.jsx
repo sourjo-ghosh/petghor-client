@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { authClient } from "@/app/lib/auth-client";
 import { motion } from "framer-motion";
 import { Plus, CheckCircle2, AlertCircle, Loader } from "lucide-react";
+import { toast } from "sonner";
 import { PostPet } from "@/app/lib/actions";
 
 const speciesOptions = [
@@ -38,10 +39,30 @@ export default function AddPetsPage() {
       setIsSubmitting(true);
       const result = await PostPet(formData);
       console.log(result);
+      
+      if (result.success) {
+        toast.success('Pet added successfully! 🐾', {
+          description: `${formData.petName} has been added to PetGhor.`,
+          duration: 4000
+        });
+        e.target.reset();
+        setTimeout(() => {
+          window.location.href = '/dashboard/my-listings';
+        }, 1500);
+      } else {
+        toast.error('Failed to add pet', {
+          description: result.message || 'Please try again.',
+          duration: 4000
+        });
+      }
       setIsSubmitting(false);
     } catch (error) {
       console.error("Error posting pet:", error);
-      throw error;
+      toast.error('Error adding pet', {
+        description: error.message || 'Something went wrong. Please try again.',
+        duration: 4000
+      });
+      setIsSubmitting(false);
     }
   };
 
