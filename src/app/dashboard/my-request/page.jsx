@@ -20,8 +20,15 @@ export default function MyRequestsPage() {
   useEffect(() => {
     async function loadRequests() {
       try {
+        const token = await authClient.token();
+        const tokenValue = token?.data?.token;
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard/my-requests?email=${session?.user?.email}`,
+          {
+            headers: {
+              authorization: `Bearer ${tokenValue}`,
+            },
+          }
         );
         const data = await res.json();
         setRequestsData(data.data.myRequests || []);
@@ -41,12 +48,17 @@ export default function MyRequestsPage() {
   }, [session?.user?.email]);
 
   const handleDeletePet = async (petId) => {
+    const token = await authClient.token();
+    const tokenValue = token?.data?.token;
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard/delete-request/${petId}`,
       {
         method: "DELETE",
         body: JSON.stringify({ requesterEmail: session?.user?.email }),
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${tokenValue}`,
+        },
       },
     );
     const data = await res.json();

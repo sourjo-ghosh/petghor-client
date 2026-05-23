@@ -17,17 +17,20 @@ import {
   Info,
 } from "lucide-react";
 import { getPetByID } from "@/app/lib/data";
+import { authClient } from "@/app/lib/auth-client";
 
 const SinglePet = ({ params }) => {
     const [pet, setPet] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isLiked, setIsLiked] = useState(false);
-    
+
     useEffect(() => {
         const fetchPet = async () => {
         try {
+        const token = await authClient.token()
+        const tokenValue = token?.data?.token
         const { userId } = await params;
-        const SinglePet = await getPetByID(userId)
+        const SinglePet = await getPetByID(userId, tokenValue);
         setPet(SinglePet.data);
         // console.log("pets", SinglePet.data)
       } catch (error) {

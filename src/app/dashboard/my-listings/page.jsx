@@ -38,7 +38,9 @@ export default function MyListingsPage() {
   useEffect(() => {
     async function loadPets() {
       try {
-        const myListings = await getMyListings(session?.user?.email);
+        const token = await authClient.token();
+        const tokenValue = token?.data?.token;
+        const myListings = await getMyListings(session?.user?.email, tokenValue);
         setPets(myListings?.data?.myPets || myListings || []);
         setTotalList(myListings?.data?.totalList || []);
         setAdoptedList(myListings?.data?.adoptedList || []);
@@ -59,8 +61,14 @@ export default function MyListingsPage() {
     setSelectedPetId(petId);
     setLoadingRequests(true);
     try {
+      const token = await authClient.token();
+      const tokenValue = token?.data?.token;
       const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/adoptions/pet-requests?petId=${petId}`;
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          authorization: `Bearer ${tokenValue}`,
+        },
+      });
       if (!res.ok) throw new Error(`API error: ${res.status}`);
       const data = await res.json();
       setRequests(data?.data || []);
@@ -74,9 +82,14 @@ export default function MyListingsPage() {
   };
 
   const handleApprove = async (requestId, petId) => {
+    const token = await authClient.token();
+    const tokenValue = token?.data?.token;
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/adoptions/approve`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${tokenValue}`,
+      },
       body: JSON.stringify({ requestId, petId }),
     });
     const data = await res.json();
@@ -88,9 +101,14 @@ export default function MyListingsPage() {
   };
 
   const handleReject = async (requestId, petId) => {
+    const token = await authClient.token();
+    const tokenValue = token?.data?.token;
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/adoptions/reject`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${tokenValue}`,
+      },
       body: JSON.stringify({ requestId, petId }),
     });
     const data = await res.json();
@@ -102,10 +120,15 @@ export default function MyListingsPage() {
   };
 
   const handleDeletePet = async (petId) => {
+    const token = await authClient.token();
+    const tokenValue = token?.data?.token;
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard/delete-pet/${petId}`, {
       method: "DELETE",
       body: JSON.stringify({ petOwnerEmail: session?.user?.email }),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${tokenValue}`,
+      },
     });
     const data = await res.json();
     if (data.success) {
@@ -160,11 +183,16 @@ export default function MyListingsPage() {
     e.preventDefault();
     setIsUpdating(true);
     try {
+      const token = await authClient.token();
+      const tokenValue = token?.data?.token;
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard/update-pet/${editingPet._id}`,
         {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${tokenValue}`,
+          },
           body: JSON.stringify({ ...editForm, petOwnerEmail: session?.user?.email }),
         }
       );

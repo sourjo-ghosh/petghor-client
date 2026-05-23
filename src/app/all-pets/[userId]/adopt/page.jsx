@@ -23,9 +23,11 @@ const AdoptPage = ({ params }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const token = await authClient.token();
+        const tokenValue = token?.data?.token;
         const { userId: id } = await params;
         setUserId(id);
-        const petData = await getPetByID(id);
+        const petData = await getPetByID(id, tokenValue);
         setPet(petData.data);
         // console.log('Pet data:', petData.data);
       } catch (error) {
@@ -42,6 +44,8 @@ const AdoptPage = ({ params }) => {
     setSubmitting(true);
 
     try {
+      const token = await authClient.token();
+      const tokenValue = token?.data?.token;
       const formData = new FormData(e.target);
       
       const adoptionData = {
@@ -59,7 +63,7 @@ const AdoptPage = ({ params }) => {
       
       // console.log('Adoption Request Data:', adoptionData);
       
-      const response = await adoptPet(adoptionData);
+      const response = await adoptPet(adoptionData, tokenValue);
       
       if (response.success) {
         toast.success('Adoption request submitted! 🎉', {

@@ -23,7 +23,6 @@ const vaccinationStatusOptions = [
   "Partially Vaccinated",
   "Not Vaccinated",
 ];
-const petStatusOptions = ["Available", "Adopted"];
 
 export default function AddPetsPage() {
   const { data: session } = authClient.useSession();
@@ -38,9 +37,11 @@ export default function AddPetsPage() {
     // console.log(formData);
     try {
       setIsSubmitting(true);
-      const result = await PostPet(formData);
+      const token = await authClient.token();
+      const tokenValue = token?.data?.token;
+      const result = await PostPet(formData, tokenValue);
       // console.log(result);
-      
+      console.log(tokenValue)
       if (result.success) {
         toast.success('Pet added successfully! 🐾', {
           description: `${formData.petName} has been added to PetGhor.`,

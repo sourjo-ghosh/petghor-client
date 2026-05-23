@@ -14,13 +14,13 @@ const DashboardPage = () => {
   useEffect(() => {
       async function loadPets() {
         try {
-          const myListings = await getMyListings(session?.user?.email);
+          const token = await authClient.token();
+          const tokenValue = token?.data?.token;
+          const myListings = await getMyListings(session?.user?.email, tokenValue);
           setTotalListings(myListings?.data?.myPets.length || 0);
         } catch (error) {
           console.error("Failed to fetch pets:", error);
           setTotalListings(0);
-        } finally {
-          setLoading(false);
         }
       }
       loadPets();

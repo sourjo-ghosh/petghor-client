@@ -6,9 +6,15 @@ import SuccessStories from "@/components/HomePage/SuccessStories";
 import PetCareTips from "@/components/HomePage/PetCareTips";
 import JoinCommunity from "@/components/HomePage/JoinCommunity";
 import { getPetsForShowCase } from "./lib/data";
+import { auth } from "./lib/auth";
+import { headers } from "next/headers";
 
 export default async function Home() {
-  const sixPets = await getPetsForShowCase()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+  const tokenValue = session?.session?.token || session?.session?.id;
+  const sixPets = await getPetsForShowCase(tokenValue);
   // console.log(sixPets)
   return (
     <main className="overflow-hidden">
