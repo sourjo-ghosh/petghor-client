@@ -11,7 +11,7 @@ export const getMyListings = async (email) => {
   const res =
     await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard/my-listings?email=${email}`);
   const data = await res.json();
-  return data.data || [];
+  return data;
 };
 
 export const getPetsForShowCase = async () => {

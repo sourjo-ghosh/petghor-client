@@ -29,7 +29,7 @@ const SinglePet = ({ params }) => {
         const { userId } = await params;
         const SinglePet = await getPetByID(userId)
         setPet(SinglePet.data);
-        console.log("pets", SinglePet.data)
+        // console.log("pets", SinglePet.data)
       } catch (error) {
         console.error("Error fetching pet:", error);
       } finally {

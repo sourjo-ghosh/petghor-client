@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { authClient } from "@/app/lib/auth-client";
 import { motion } from "framer-motion";
-import { Plus, CheckCircle2, AlertCircle, Loader } from "lucide-react";
+import { Plus, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { PostPet } from "@/app/lib/actions";
 
@@ -35,11 +35,11 @@ export default function AddPetsPage() {
     e.preventDefault();
     const data = new FormData(e.target);
     const formData = Object.fromEntries(data.entries());
-    console.log(formData);
+    // console.log(formData);
     try {
       setIsSubmitting(true);
       const result = await PostPet(formData);
-      console.log(result);
+      // console.log(result);
       
       if (result.success) {
         toast.success('Pet added successfully! 🐾', {

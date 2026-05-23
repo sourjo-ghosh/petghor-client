@@ -57,7 +57,7 @@ const AdoptPage = ({ params }) => {
         requestDate: new Date()
       };
       
-      console.log('Adoption Request Data:', adoptionData);
+      // console.log('Adoption Request Data:', adoptionData);
       
       const response = await adoptPet(adoptionData);
       

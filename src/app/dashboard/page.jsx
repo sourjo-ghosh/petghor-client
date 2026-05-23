@@ -15,7 +15,7 @@ const DashboardPage = () => {
       async function loadPets() {
         try {
           const myListings = await getMyListings(session?.user?.email);
-          setTotalListings(myListings.length);
+          setTotalListings(myListings?.data?.myPets.length || 0);
         } catch (error) {
           console.error("Failed to fetch pets:", error);
           setTotalListings(0);
@@ -133,22 +133,6 @@ const DashboardPage = () => {
           </motion.div>
         </div>
 
-        {/* <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-12 bg-card rounded-3xl border border-border/60 shadow-sm p-8"
-        >
-          <h2 className="text-2xl font-bold text-foreground mb-6">Recent Activity</h2>
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-muted/40 flex items-center justify-center mx-auto mb-4">
-                <Heart className="h-8 w-8 text-muted-foreground/50" />
-              </div>
-              <p className="text-muted-foreground">No activity yet. Start by adding a pet or checking adoption requests!</p>
-            </div>
-          </div>
-        </motion.div> */}
       </main>
     </div>
   );
