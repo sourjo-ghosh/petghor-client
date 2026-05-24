@@ -9,6 +9,7 @@
 Welcome to **PetGhor**, a premium full-stack pet adoption portal engineered using **Next.js 16 (App Router)**, **React 19**, and **Tailwind CSS v4**. PetGhor simplifies the journey of matching lovable pets (dogs, cats, rabbits, birds, and more) with caring owners, offering secure workflows, high-performance search engine indexing (SEO), and a beautiful glassmorphic dashboard.
 
 ---
+<img width="1439" height="765" alt="image" src="https://github.com/user-attachments/assets/13e3fad4-4170-4311-a259-f6d09dfd1dfe" />
 
 ## 🌟 Key Features
 
