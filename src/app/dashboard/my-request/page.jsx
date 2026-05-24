@@ -16,6 +16,7 @@ export default function MyRequestsPage() {
   const [pendingList, setPendingList] = useState([]);
   const [petToDelete, setPetToDelete] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteButtonShow, setDeleteButtonShow] = useState(true)
 
   useEffect(() => {
     async function loadRequests() {
@@ -48,6 +49,7 @@ export default function MyRequestsPage() {
   }, [session?.user?.email]);
 
   const handleDeletePet = async (petId) => {
+    setDeleteButtonShow(false);
     const token = await authClient.token();
     const tokenValue = token?.data?.token;
     const res = await fetch(
@@ -71,8 +73,10 @@ export default function MyRequestsPage() {
         prevRequests.filter((request) => request._id !== petId),
       );
       setPendingList((prev) => prev.filter((req) => req._id !== petId));
+      setDeleteButtonShow(true);
     } else {
       toast.error(data.message || "Failed to delete request!");
+      setDeleteButtonShow(true);
     }
   };
   const handleDeleteClick = (petId) => {
@@ -343,7 +347,7 @@ export default function MyRequestsPage() {
                     onClick={handleConfirmDelete}
                     className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white font-semibold text-sm hover:bg-red-700 transition-colors"
                   >
-                    Delete
+                     {deleteButtonShow ? "Delete" : "Deleting..."}
                   </button>
                 </div>
               </div>

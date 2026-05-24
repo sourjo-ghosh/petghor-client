@@ -10,11 +10,12 @@ import { authClient } from "@/app/lib/auth-client";
 import { getMyListings } from "@/app/lib/data";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
+
 const speciesOptions = ["Dog", "Cat", "Bird", "Rabbit", "Hamster", "Fish", "Other"];
 const genderOptions = ["Male", "Female", "Unknown"];
 const healthStatusOptions = ["Excellent", "Good", "Fair", "Special Needs"];
 const vaccinationStatusOptions = ["Fully Vaccinated", "Partially Vaccinated", "Not Vaccinated"];
-const petStatusOptions = ["available", "adopted"];
+
 
 export default function MyListingsPage() {
   const { data: session } = authClient.useSession();
@@ -28,6 +29,8 @@ export default function MyListingsPage() {
   const [totalList, setTotalList] = useState([]);
   const [adoptedList, setAdoptedList] = useState([]);
   const [availableList, setAvailableList] = useState([]);
+  const [buttonShow, setButtonShow] = useState(true)
+  const [deleteButtonShow, setDeleteButtonShow] = useState(true)
 
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -94,6 +97,7 @@ export default function MyListingsPage() {
     });
     const data = await res.json();
     if (data.success) {
+      setButtonShow(false);
       toast.success(data.message || "Approved!");
     } else {
       toast.error(data.message || "Failed to approve request!");
@@ -113,6 +117,7 @@ export default function MyListingsPage() {
     });
     const data = await res.json();
     if (data.success) {
+      setButtonShow(false);
       toast.success(data.message || "Rejected!");
     } else {
       toast.error(data.message || "Failed to reject request!");
@@ -120,6 +125,7 @@ export default function MyListingsPage() {
   };
 
   const handleDeletePet = async (petId) => {
+    setDeleteButtonShow(false);
     const token = await authClient.token();
     const tokenValue = token?.data?.token;
     const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/dashboard/delete-pet/${petId}`, {
@@ -132,6 +138,7 @@ export default function MyListingsPage() {
     });
     const data = await res.json();
     if (data.success) {
+      setDeleteButtonShow(true);
       toast.success(data.message || "Pet deleted successfully!");
       setPets((prevPets) => prevPets.filter((pet) => pet._id !== petId));
       setDeleteModalOpen(false);
@@ -152,7 +159,7 @@ export default function MyListingsPage() {
     }
   };
 
-  // ─── Edit Modal ───────────────────────────────────────────────────────────────
+ 
   const handleEditPet = (petId) => {
     const pet = pets.find((p) => p._id === petId);
     if (!pet) return;
@@ -468,18 +475,23 @@ export default function MyListingsPage() {
                         </p>
                         {request.status === "pending" && (
                           <div className="flex gap-2">
+                          {buttonShow ? 
+                          <div>
+                          
                             <button
-                              onClick={() => handleApprove(request._id, selectedPetId)}
-                              className="flex-1 px-3 py-2 rounded-lg bg-green-100 text-green-700 font-semibold text-sm hover:bg-green-200 transition-colors"
+                            onClick={() => handleApprove(request._id, selectedPetId)}
+                            className="flex-1 px-3 py-2 rounded-lg bg-green-100 text-green-700 font-semibold text-sm hover:bg-green-200 transition-colors"
                             >
                               Accepted
                             </button>
                             <button
-                              onClick={() => handleReject(request._id, selectedPetId)}
-                              className="flex-1 px-3 py-2 rounded-lg bg-red-100 text-red-700 font-semibold text-sm hover:bg-red-200 transition-colors"
+                            onClick={() => handleReject(request._id, selectedPetId)}
+                            className="flex-1 px-3 py-2 rounded-lg bg-red-100 text-red-700 font-semibold text-sm hover:bg-red-200 transition-colors"
                             >
                               Rejected
                             </button>
+                          </div>    
+                            : <p>No actions available</p>}
                           </div>
                         )}
                       </div>
@@ -528,7 +540,7 @@ export default function MyListingsPage() {
                     onClick={handleConfirmDelete}
                     className="flex-1 px-4 py-2 rounded-lg bg-red-600 text-white font-semibold text-sm hover:bg-red-700 transition-colors"
                   >
-                    Delete
+                    {deleteButtonShow ? "Delete" : "Deleting..."}
                   </button>
                 </div>
               </div>
